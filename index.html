@@ -9,8 +9,9 @@
 		<!-- Script -->
 		<!-- <script src="script.js"></script> -->
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollToPlugin.min.js"></script>
 		<script defer src="gsap.js"></script>
-		<script src="index.js"></script>
+		<script defer src="script.js"></script>
 		<!-- CSS -->
 		<link rel="stylesheet" href="styling/style.css">
 		<!-- Title -->
@@ -18,13 +19,13 @@
 	</head>
 
 	<body>
-		<nav>
+		<!-- <nav>
 			<div class="logo">
 				<img src="img/logo.svg" alt="logo">
 				<span>Kanaron</span>
 			</div>
 			<ul class="menu">
-				<li class="menu__item active">
+				<li class="menu__item ">
 					<a href="index.html">
 						<span class="material-icons icon">
 							analytics
@@ -32,7 +33,7 @@
 						Dashboard
 					</a>
 				</li>
-				<li class="menu__item">
+				<li class="menu__item active">
 					<a href="learn.html">
 						<span class="material-icons icon">
 							school
@@ -57,25 +58,93 @@
 					</a>
 				</li>
 			</ul>
-		</nav>
-
+		</nav> -->
 		<main>
-			<h3 class="greeting" id="greeting">👋</h3>
-			<h1 class="points" id="points">You've got 63 Points!</h1>
+			<h1>CTRL + V | Klistra in klippbordet för att starta</h1>
+			<button id="latest" onclick="latest(this)">eller använd senaste</button>
+			<textarea name="paste" id="unfiltered_input" cols="30" rows="10" onpaste="setTimeout(() => {handle_input(this.value)}, 100)" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false"></textarea>
+				<!-- <p id="stats">Snyggt! Du svarade alla rätt förutom 2 där du klarade det på andra försöket!</p> -->
 
-			<div class="statistics">
-				<div class="courses">
-					<h2 class="title">Statistics</h2>
-				</div>
-
-				<div class="awards">
-					<h2 class="title">Awards</h2>
-				</div>
-
-				<div class="time">
-					<h2 class="title">Time</h2>
-				</div>
-			</div>
+			<p id="error_message" class="error-message"></p>
 		</main>
+		
+		<div class="glossary_container">
+
+			<div class="line-steps" id="lines">
+			</div>
+			<div class="arrows">
+				<a onclick="previous()" class="arrow">
+					<span class="material-icons">west</span>Föregående
+				</a>
+				<p id="question_ratio">fråga <span id="gloss_index"></span> / <span id="gloss_count"></span></p>
+
+				<a onclick="skip()" class="arrow">
+					Hoppa över<span class="material-icons">east</span>
+				</a>
+			</div>
+			<div class="glossary_container__content">
+				<div class="glossary-wrapper">
+					<h1 id="gloss_output"></h1>
+					<div class="input-group">
+						<input type="text" class="input" id="input" autocomplete="off" placeholder="Skriv ditt svar här">
+						<div class="input-buttons">
+
+							<div class="tooltip tip" onclick="this.classList.toggle('active')"><span class="material-icons">lightbulb</span>
+								<span class="tooltip__text">
+									<span class="tooltip__text--bold">Tip:</span>
+									<span id="tip"></span>
+								</span>
+							</div>
+							<div class="tooltip answer" onclick="this.classList.toggle('active')"><span class="material-icons">visibility</span>
+								<span class="tooltip__text">
+									<span class="tooltip__text--bold">Svar:</span>
+									<span id="answer">Svar</span>
+								</span>
+							</span>
+								
+							</div>
+						</div>
+					</div>
+					<button class="continue" onclick="submit_answer()">
+						Submit<span class="material-icons icon">east</span>
+					</button>
+				</div>
+				<!-- <div class="arrows">
+					<span class="material-icons arrow right" onclick="handle_answer(input.value, 0)">
+						keyboard_arrow_right
+					</span>
+				</div> -->
+
+				
+				<p class="wrong" id="message"></p>
+
+			</div>
+		</div>
+
+		<div class="modal" id="error" onclick="javascript:toggleModal(this.id)">
+			<div class="modal__content"
+			onclick="javascript:event.cancelBubble = true; if (event.stopPropagation) event.stopPropagation();">
+				<span class="material-icons close" onclick="javascript:toggleModal('error')">close</span>
+				<h1><span class="material-icons icon">error_outline</span>Oläslig inmatning</h1>
+				<p>Ordlistan kunde inte läsas. Är du säker på att du klistrade in rätt innehåll? Försök vänligen igen.</p>
+				<button class="modal__content__button" onclick="toggleModal('error')">
+					<!-- <span class="material-icons">close</span> -->
+					Ok
+				</button>
+			</div>
+		</div>
+
+
+		<script>
+			window.onload = () => {
+				const textarea = document.getElementById("unfiltered_input");
+				textarea.focus();
+
+				window.onhashchange = () => {
+					textarea.focus();
+				}
+			}
+		</script>
 	</body>
+
 </html>
