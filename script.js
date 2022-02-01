@@ -229,7 +229,7 @@ const handle_input = (user_input) => {
 let rendering = false;
 const render_message = (message, color, element_id, delay = 0, stay_delay = 0, custom_style = null, renderblock = true) => {
 	if (renderblock && rendering) {
-		return
+		return 
 	};
 	rendering = true;
 
@@ -295,6 +295,11 @@ const handle_answer = (answer) =>{
 	
 	if (answer.toLowerCase() == glosses[glossIndex][0].toLowerCase()) {
 		if(glossIndex >= glosses.length-1) { close(); return; }
+
+		if (glossIndex >= 0) {
+			document.getElementById("prev").innerHTML = "Föregående";
+		}
+
 		animation()
 	} else {
 		similarity_score = similarity(answer, glosses[glossIndex][0]);
@@ -328,7 +333,11 @@ const showGloss = (n = 0) => {
 	})
 	
 	document.getElementById("input").value = "";
-	document.getElementById("input").focus();		
+	document.getElementById("input").focus();
+	
+	if (n == 0) {
+		document.getElementById("prev").innerHTML = "Stäng";
+	}
 }
 
 const count_steps = (n) => {
