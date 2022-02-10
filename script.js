@@ -18,11 +18,28 @@ const render_text = (text, element, add = false) => {
 const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+var isChromium = window.chrome;
+var winNav = window.navigator;
+var vendorName = winNav.vendor;
+var isOpera = typeof window.opr !== "undefined";
+var isIEedge = winNav.userAgent.indexOf("Edg") > -1;
+var isIOSChrome = winNav.userAgent.match("CriOS");
+
 const input_fix = (input) => {
-	glossary_filtered = input.replace(/[f,m]\n/gm, '');
-	glossary_filtered = glossary_filtered.replace(/\n{2}/gm, '\n');
-	glossary_filtered = glossary_filtered.replace(/\s{3}/gm, '\n');
-	glossary_filtered = glossary_filtered.replace(/\([^)]*\)/g, '');
+	if(input.match(/\n[f,m]\n/gm)){
+		console.log("Running Firefox Regex")
+		glossary_filtered = input.replace(/[f,m]\n/gm, '');
+		glossary_filtered = glossary_filtered.replace(/\n{2}/gm, '\n');
+		glossary_filtered = glossary_filtered.replace(/\s{3}/gm, '\n');
+		glossary_filtered = glossary_filtered.replace(/\([^)]*\)/g, '');	
+	} else {
+		console.log("Running Chrome Regex")
+		glossary_filtered = input.replace(/[f,m]\s$/gm, '');
+		glossary_filtered = glossary_filtered.replace(/\n$/gm, '');
+		glossary_filtered = glossary_filtered.replace(/\([^)]*\)/g, '');
+	}
+
 	glossary_filtered = glossary_filtered.toLowerCase();
 	glossary_filtered = glossary_filtered += '\n';
 	return glossary_filtered;
@@ -303,11 +320,14 @@ const handle_answer = (answer) =>{
 		animation()
 	} else {
 		similarity_score = similarity(answer, glosses[glossIndex][0]);
+		rounded_score = Math.round(similarity_score * 10);
+		
+		console.log("from 1-10, how close? (1 least, 10 max) :", similarity_score, "(rounded", rounded_score+") - corresponding message:", messages[rounded_score]);
 
 		glossTries += 1;
 
-		message = messages[Math.round(similarity_score * 10)];
-		color = colors[Math.round(similarity_score * 10)]
+		message = messages[rounded_score];
+		color = colors[rounded_score]
 		number = numbers[glossTries-1] ? numbers[glossTries-1] : glossTries + "'de";
 		render_message(`${message} Du är ${Math.round(100 - similarity_score * 100)}% ifrån | ${number} försöket.`, color, "message", 0, 1.5, null, false);
 	}

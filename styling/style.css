@@ -367,7 +367,7 @@ main .error-message {
   -ms-overflow-style: none;
 }
 
-.glossary_container .line-steps ::-webkit-scrollbar {
+.glossary_container .line-steps::-webkit-scrollbar {
   display: none;
 }
 
