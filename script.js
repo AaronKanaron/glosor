@@ -19,29 +19,23 @@ const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-var isChromium = window.chrome;
-var winNav = window.navigator;
-var vendorName = winNav.vendor;
-var isOpera = typeof window.opr !== "undefined";
-var isIEedge = winNav.userAgent.indexOf("Edg") > -1;
-var isIOSChrome = winNav.userAgent.match("CriOS");
 
 const input_fix = (input) => {
-	if(input.match(/\n[f,m]\n/gm)){
+	const firefox_copy = input.match(/\n[f,m]\n/gm)
+	if(firefox_copy) {
 		console.log("Running Firefox Regex")
-		glossary_filtered = input.replace(/[f,m]\n/gm, '');
-		glossary_filtered = glossary_filtered.replace(/\n{2}/gm, '\n');
+		// glossary_filtered = input.replace(/[f,m]\n/gm, '');
+		glossary_filtered = input.replace(/\n{2}/gm, '\n');
 		glossary_filtered = glossary_filtered.replace(/\s{3}/gm, '\n');
 		glossary_filtered = glossary_filtered.replace(/\([^)]*\)/g, '');	
 	} else {
 		console.log("Running Chrome Regex")
-		glossary_filtered = input.replace(/[f,m]\s$/gm, '');
-		glossary_filtered = glossary_filtered.replace(/\n$/gm, '');
+		// glossary_filtered = input.replace(/[f,m]\s$/gm, '');
+		glossary_filtered = input.replace(/\n$/gm, '');
 		glossary_filtered = glossary_filtered.replace(/\([^)]*\)/g, '');
 	}
 
 	glossary_filtered = glossary_filtered.toLowerCase();
-	glossary_filtered = glossary_filtered += '\n';
 	return glossary_filtered;
 }
 function debounce(func, timeout = 300){
@@ -67,11 +61,27 @@ function toggleModal(modal_id){
 	modal.classList.toggle("open");
 }
 
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
+function shuffle(array, array2) {
+    var counter = array.length, temp, temp2, index;
+
+    // While there are elements in the array
+    while (counter > 0) {
+        // Pick a random index
+        index = Math.floor(Math.random() * counter);
+
+        // Decrease counter by 1
+        counter--;
+
+        // And swap the last element with it
+        temp = array[counter];
+        temp2 = array2[counter];
+
+        array[counter] = array[index];
+        array2[counter] = array2[index];
+
+        array[index] = temp;
+        array2[index] = temp2;
+    } 
 }
 function editDistance(s1, s2) {
   s1 = s1.toLowerCase();
@@ -114,7 +124,8 @@ function similarity(s1, s2) {
 }
 const latest = (e) => {
 	let latest_gloss = JSON.parse(localStorage.getItem("latest_gloss"));
-	if(!latest_gloss || latest_gloss == "" || latest_gloss == null || latest_gloss == undefined) {
+	let latest_gender = JSON.parse(localStorage.getItem("latest_gender"));
+	if(!latest_gloss || latest_gloss == "" || latest_gloss == null || latest_gloss == undefined || !latest_gender || latest_gender == "" || latest_gender == null || latest_gender == undefined) {
 		render_message(`Kunde inte hitta din senaste ordlista i din lokala lagring`, "red", "error_message", 0, .25);
 		error_shake('#' + e.id, 5);
 		return;
@@ -124,6 +135,7 @@ const latest = (e) => {
 }
 
 let glosses = []
+let gender = [];
 var glossIndex = 0;
 let glossTries = 0;
 
@@ -199,21 +211,38 @@ const submit_answer = debounce(() => handle_answer(document.getElementById('inpu
 
 const handle_input = (user_input) => {
 	glossary = input_fix(user_input);	
-	const regexp = /(.*\n){1}(.*\n){1}/gm;
-	const matches = glossary.matchAll(regexp)
+	const genders = glossary.matchAll(/[f,m]\n/gm);
+
+	for (const g of genders) {
+		gender.push(g);
+	}
+
+	const firefox_copy = glossary.match(/\n[f,m]\n/gm)
+
+	if(firefox_copy) {
+		console.log("runing firfox")
+		glossary = glossary.replace(/[f,m]\n/gm, "")
+	} else {
+		console.log("runing chrome")
+		glossary = glossary.replace(/[f,m]\s$/gm, "")
+	}
+ 
+	glossary += "\n";
+	const matches = glossary.matchAll(/(.*\n){1}(.*\n){1}/gm)
 	
-	const languages = ["Franska", "Svenska", "Spanska", "Arabiska", "Italienska"]
-	let language1 = ""
-	let language2 = ""
+	//for every match in matches
+	
+	
 	for (const match of matches) {
 		let lang1 = match[1].replace(/\n/g, '');
 		lang1 = lang1.replace(/[ \t]+$/gm, '');
 		let lang2 = match[2].replace(/\n/g, '');
 		lang2 = lang2.replace(/[ \t]+$/gm, '');
 
-		
+
 		glosses.push([lang1, lang2]);
 	}
+
 
 	//after array completion
 
@@ -232,14 +261,18 @@ const handle_input = (user_input) => {
 	}
 
 	localStorage.setItem("latest_gloss", JSON.stringify(glossary));
-	
-	shuffle(glosses);
+	localStorage.setItem("latest_gender", JSON.stringify(gender));
+
+	shuffle(glosses, gender)
+	console.log(glosses, gender);
 	render_text(glossIndex + 1, document.getElementById("gloss_index"));
 	render_text(glosses.length, document.getElementById("gloss_count"));
 	render_text(steps(glosses.length), document.getElementById("lines"));
 	plusGloss();
 	slide_in("up", ".glossary_container", 1, false);
 
+	console.log(glosses)
+	console.log(gender)
 
 }
 
@@ -281,6 +314,7 @@ const previous = () => {
 const skip = () => {
 	// glosses.push(glosses[glossIndex]);
 	glosses.push(glosses.splice(glossIndex, 1)[0]);
+	gender.push(gender.splice(glossIndex, 1)[0]);
 	showGloss(glossIndex);
 }
 const close = () => {
@@ -343,7 +377,14 @@ const plusGloss = (n = 0) => {
 	showGloss(glossIndex += n);
 }
 const showGloss = (n = 0) => {
-	render_text("Översätt \"" + capitalizeFirstLetter(glosses[n][1] + "\"."), document.getElementById("gloss_output"));
+	let gendr = "";
+	if (!gender[n] || gender[n] == "undefined"){
+		gendr = "";
+	} else {
+		gendr = gender[n]
+	}
+
+	render_text(`Översätt "${capitalizeFirstLetter(glosses[n][1])}". ${gendr}`, document.getElementById("gloss_output"));
 	generate_tip();
 	render_text(glosses[glossIndex][0], document.getElementById("answer"));
 	glossTries = 0;

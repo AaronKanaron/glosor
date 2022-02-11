@@ -47,6 +47,9 @@ const slide_out = (direction = "right", element, duration = 2, opacity = true) =
 	gsap.to(element, {duration: duration, opacity: opacity, y: y_dir, x: x_dir, ease: "power4.out"});
 }
 
+const add_char = (char) => {
+	document.getElementById("input").value += char;
+}
 
 const error_shake = (element = this, amount = 10, time = .4) => {
 	let time_divided = time / 7;

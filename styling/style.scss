@@ -423,6 +423,10 @@ main{
 						visibility: visible;
 					}
 				}
+				&>* .tooltip__text:hover{
+					visibility: visible;
+				}
+
 				&>*.active{
 					color: darken(#929199, 10%);
 
@@ -430,8 +434,24 @@ main{
 						visibility: visible;
 					}
 				}
-				&>*.active{
-					color: darken(#929199, 10%);
+
+				.keyboard{
+					display: flex;
+					flex-wrap: wrap;
+					gap: .4rem;
+					justify-content: center;
+					
+
+					.key{
+						border: 1px solid white;
+						padding: .3rem;
+						border-radius: 7px;
+						
+						&:hover{
+							background-color: #ffb904;
+							color: black;
+						}
+					}
 				}
 
 				.tooltip{
@@ -468,6 +488,10 @@ main{
 							border: 5px solid;
 							border-color: transparent transparent black transparent;
 						}
+					}
+
+					.extra-padding{
+						padding-top: 5rem;
 					}
 				}
 			}

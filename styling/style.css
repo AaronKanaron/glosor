@@ -530,6 +530,10 @@ main .error-message {
   visibility: visible;
 }
 
+.glossary_container__content .input-group .input-buttons > * .tooltip__text:hover {
+  visibility: visible;
+}
+
 .glossary_container__content .input-group .input-buttons > *.active {
   color: #787780;
 }
@@ -538,8 +542,27 @@ main .error-message {
   visibility: visible;
 }
 
-.glossary_container__content .input-group .input-buttons > *.active {
-  color: #787780;
+.glossary_container__content .input-group .input-buttons .keyboard {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  gap: .4rem;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.glossary_container__content .input-group .input-buttons .keyboard .key {
+  border: 1px solid white;
+  padding: .3rem;
+  border-radius: 7px;
+}
+
+.glossary_container__content .input-group .input-buttons .keyboard .key:hover {
+  background-color: #ffb904;
+  color: black;
 }
 
 .glossary_container__content .input-group .input-buttons .tooltip {
@@ -578,6 +601,10 @@ main .error-message {
           transform: translateX(-50%);
   border: 5px solid;
   border-color: transparent transparent black transparent;
+}
+
+.glossary_container__content .input-group .input-buttons .tooltip .extra-padding {
+  padding-top: 5rem;
 }
 
 .glossary_container__content .input-group .input {
