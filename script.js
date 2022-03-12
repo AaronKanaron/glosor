@@ -64,21 +64,13 @@ function toggleModal(modal_id){
 function shuffle(array, array2) {
     var counter = array.length, temp, temp2, index;
 
-    // While there are elements in the array
     while (counter > 0) {
-        // Pick a random index
         index = Math.floor(Math.random() * counter);
-
-        // Decrease counter by 1
         counter--;
-
-        // And swap the last element with it
         temp = array[counter];
         temp2 = array2[counter];
-
         array[counter] = array[index];
         array2[counter] = array2[index];
-
         array[index] = temp;
         array2[index] = temp2;
     } 
@@ -343,8 +335,22 @@ const animation = () => {
 
 const handle_answer = (answer) =>{
 	if (answer.trim().length === 0) {return;}
-	
-	if (answer.toLowerCase() == glosses[glossIndex][0].toLowerCase()) {
+
+	if (glosses[glossIndex][0].slice(-1) == "s"){
+		//Answer is plural
+		prefix = "les ";
+	} else if (/a|o|u|e|i/.test(glosses[glossIndex][0].charAt(0))){
+		prefix = "l'"
+	}
+	else if(gender[glossIndex == "f\n"]){
+		prefix = "la "
+	} else {
+		prefix = "le "
+	}
+
+	usedPrefix = prefix + glosses[glossIndex][0]
+
+	if (answer.toLowerCase() == glosses[glossIndex][0].toLowerCase() || answer.toLowerCase() == usedPrefix) {
 		if(glossIndex >= glosses.length-1) { close(); return; }
 
 		if (glossIndex >= 0) {
@@ -352,7 +358,10 @@ const handle_answer = (answer) =>{
 		}
 
 		animation()
-	} else {
+	}
+	else {
+
+
 		similarity_score = similarity(answer, glosses[glossIndex][0]);
 		rounded_score = Math.round(similarity_score * 10);
 		
