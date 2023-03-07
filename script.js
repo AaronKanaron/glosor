@@ -167,10 +167,10 @@ const winning_message = [
 	"Suprême!",
 	"Excellent!",
 	"Élégant!",
-	"Sehr Gut!"
-	"Fantastiskt"
-	"Helt Otroligt"
-	"Osannoligt bra"
+	"Sehr Gut!",
+	"Fantastiskt",
+	"Helt Otroligt",
+	"Osannoligt bra",
 	"Kolosalt bra",
 	"Woauw",
 ]
