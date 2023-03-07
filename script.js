@@ -166,7 +166,13 @@ const winning_message = [
 	"Merveilleux!",
 	"Suprême!",
 	"Excellent!",
-	"Élégant!"
+	"Élégant!",
+	"Sehr Gut!"
+	"Fantastiskt"
+	"Helt Otroligt"
+	"Osannoligt bra"
+	"Kolosalt bra",
+	"Woauw",
 ]
 const numbers = [
 	"första",
